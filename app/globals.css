@@ -1,6 +1,46 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Brand theme tokens */
+:root {
+  /* Soft paper background and charcoal foreground */
+  --background: 0 0% 99%;
+  --foreground: 220 10% 18%;
+
+  /* UI neutrals */
+  --border: 0 0% 86%;
+  --input: var(--border);
+  --ring: 8 55% 62%;
+
+  /* Copy tones */
+  --muted: 0 0% 96%;
+  --muted-foreground: 220 6% 42%;
+
+  /* Brand accent: muted rose used for underlines and details */
+  --accent: 8 55% 62%;
+  --accent-foreground: 0 0% 100%;
+
+  /* Primary buttons default to accent */
+  --primary: var(--accent);
+  --primary-foreground: 0 0% 100%;
+}
+
+/* Utility to use display font variable */
+.font-display { font-family: var(--font-display), ui-serif, Georgia, "Times New Roman", Times, serif; }
+
+/* Brand underline (triple hairline) */
+.brand-underline { position: relative; padding-bottom: 14px; }
+.brand-underline::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  height: 1px;
+  background: hsl(var(--accent) / 0.7);
+  box-shadow:
+    0 4px 0 0 hsl(var(--accent) / 0.55),
+    0 8px 0 0 hsl(var(--accent) / 0.4);
+}
+
 @keyframes border-pan {
   0% { --angle: 0deg }
   25% { --angle: 90deg }
