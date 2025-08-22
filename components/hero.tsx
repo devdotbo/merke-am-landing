@@ -173,7 +173,7 @@ export const Hero: React.FC<HeroComponentProps> = ({
             </motion.h1>
 
             <motion.p
-              className="text-xl text-muted-foreground max-w-lg"
+              className="text-xl text-muted-foreground max-w-lg lining-nums"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.0, delay: 0.2, ease: "easeOut" }}
