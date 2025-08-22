@@ -5,6 +5,7 @@ import { motion, useMotionValue, useSpring } from "framer-motion";
 import { Wallet, Zap, Database, Brain, Send, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { BorderTrail } from "@/components/ui/border-trail";
 import { toast } from "sonner";
 
 interface NodeItem {
@@ -110,10 +111,11 @@ export const Hero: React.FC<HeroComponentProps> = ({
   const cursor2X = useMotionValue(600);
   const cursor2Y = useMotionValue(150);
 
-  const springCursor1X = useSpring(cursor1X, { stiffness: 200, damping: 25 });
-  const springCursor1Y = useSpring(cursor1Y, { stiffness: 200, damping: 25 });
-  const springCursor2X = useSpring(cursor2X, { stiffness: 200, damping: 25 });
-  const springCursor2Y = useSpring(cursor2Y, { stiffness: 200, damping: 25 });
+  // Softer springs for more fluid cursor glide
+  const springCursor1X = useSpring(cursor1X, { stiffness: 120, damping: 28, mass: 0.9 });
+  const springCursor1Y = useSpring(cursor1Y, { stiffness: 120, damping: 28, mass: 0.9 });
+  const springCursor2X = useSpring(cursor2X, { stiffness: 120, damping: 28, mass: 0.9 });
+  const springCursor2Y = useSpring(cursor2Y, { stiffness: 120, damping: 28, mass: 0.9 });
 
   const cursors: CursorItem[] = [
     { id: "alex", username: "Alex", color: "#FF6B6B" },
@@ -141,7 +143,7 @@ export const Hero: React.FC<HeroComponentProps> = ({
       id: "inference",
       label: "AI Inference",
       icon: <Brain className="w-6 h-6" />,
-      x: 650,
+      x: 600,
       y: 120,
       details: ["Language Model", "Response Generation", "Quality Scoring", "Output Validation"],
     },
@@ -154,11 +156,11 @@ export const Hero: React.FC<HeroComponentProps> = ({
     const alexTargets = [
       { x: 150, y: 120 },
       { x: 400, y: 80 },
-      { x: 650, y: 120 },
+      { x: 600, y: 120 },
     ];
 
     const sarahTargets = [
-      { x: 650, y: 120 },
+      { x: 600, y: 120 },
       { x: 150, y: 120 },
       { x: 400, y: 80 },
     ];
@@ -171,7 +173,7 @@ export const Hero: React.FC<HeroComponentProps> = ({
       setNodeStates((prev) => ({ ...prev, [currentNode.id]: true }));
       setTimeout(() => {
         setNodeStates((prev) => ({ ...prev, [currentNode.id]: false }));
-      }, 1500);
+      }, 1800);
       alexIndex = (alexIndex + 1) % alexTargets.length;
 
       setTimeout(() => {
@@ -179,8 +181,8 @@ export const Hero: React.FC<HeroComponentProps> = ({
         cursor2X.set(sarahTarget.x + Math.random() * 40 - 20);
         cursor2Y.set(sarahTarget.y + Math.random() * 40 - 20);
         sarahIndex = (sarahIndex + 1) % sarahTargets.length;
-      }, 1000);
-    }, 3000);
+      }, 1200);
+    }, 3400);
 
     return () => clearInterval(interval);
   }, [cursor1X, cursor1Y, cursor2X, cursor2Y, nodes]);
@@ -238,7 +240,7 @@ export const Hero: React.FC<HeroComponentProps> = ({
               className="text-5xl lg:text-7xl font-bold leading-tight tracking-tight"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
+              transition={{ duration: 1.0, ease: "easeOut" }}
             >
               <span className="bg-gradient-to-r from-primary via-purple-500 to-secondary bg-clip-text text-transparent drop-shadow-sm">
                 {title}
@@ -249,7 +251,7 @@ export const Hero: React.FC<HeroComponentProps> = ({
               className="text-xl text-muted-foreground max-w-lg"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.2 }}
+              transition={{ duration: 1.0, delay: 0.2, ease: "easeOut" }}
             >
               {subtitle}
             </motion.p>
@@ -259,7 +261,7 @@ export const Hero: React.FC<HeroComponentProps> = ({
               className="w-full max-w-2xl mx-auto"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
+              transition={{ duration: 1.0, delay: 0.35, ease: "easeOut" }}
             >
               {/* light trails */}
               <motion.div
@@ -281,7 +283,7 @@ export const Hero: React.FC<HeroComponentProps> = ({
                   transition={{ type: "spring", stiffness: 80, damping: 20, delay: 0.05 }}
                 />
 
-                <div className="magic-border magic-glow rounded-full">
+                <div className="relative rounded-full magic-glow">
                   <div className="relative isolate flex items-center gap-2 rounded-full bg-background/80 backdrop-blur-sm px-3 py-2">
                     <div className="grid h-9 w-9 place-items-center rounded-full bg-white/5 ring-1 ring-white/10">
                       <Sparkles className="h-4 w-4 text-violet-300" />
@@ -308,12 +310,16 @@ export const Hero: React.FC<HeroComponentProps> = ({
                       animate={{ boxShadow: inputValue.trim() ? "0 0 20px rgba(139,92,246,0.35)" : "0 0 6px rgba(139,92,246,0.15)" }}
                       className="relative flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-violet-400 to-sky-400 text-black shadow-md ring-4 ring-violet-400/15 disabled:opacity-60 disabled:cursor-not-allowed"
                     >
-                      <motion.span animate={isTyping ? { x: [0, 4, 8] } : { x: 0 }} transition={isTyping ? { duration: 0.8, repeat: Infinity, ease: "easeIn" } : { duration: 0.2 }}>
+                      <motion.span animate={isTyping ? { x: [0, 5, 0] } : { x: 0 }} transition={isTyping ? { duration: 0.9, repeat: Infinity, ease: "easeInOut" } : { duration: 0.2 }}>
                         <Send className="h-4 w-4" />
                       </motion.span>
                       <span aria-hidden className="pointer-events-none absolute inset-0 rounded-full ring-1 ring-white/30" />
                     </motion.button>
                   </div>
+                  <BorderTrail
+                    className="bg-gradient-to-l from-violet-300 via-sky-400 to-fuchsia-300"
+                    size={120}
+                  />
                 </div>
               </motion.div>
             </motion.form>
@@ -337,22 +343,22 @@ export const Hero: React.FC<HeroComponentProps> = ({
                     strokeDasharray="5,5"
                     initial={{ pathLength: 0 }}
                     animate={{ pathLength: 1 }}
-                    transition={{ duration: 2, delay: index * 0.5, repeat: Infinity, repeatType: "loop" }}
+                    transition={{ duration: 3.2, delay: index * 0.4, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }}
                   />
                 );
               })}
             </svg>
 
             {nodes.map((node, index) => (
-              <motion.div key={node.id} className="absolute" style={{ left: node.x - 60, top: node.y - 40, zIndex: 2 }} initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.5, delay: index * 0.2, type: "spring", stiffness: 200 }}>
+              <motion.div key={node.id} className="absolute" style={{ left: node.x - 60, top: node.y - 40, zIndex: 2 }} initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.6, delay: index * 0.2, type: "spring", stiffness: 160, damping: 20 }}>
                 <div className="relative">
                   <motion.div className="w-24 h-24 rounded-2xl bg-background border-2 border-primary/20 flex items-center justify-center shadow-lg backdrop-blur-sm" whileHover={{ scale: 1.05 }} animate={nodeStates[node.id] ? { borderColor: "hsl(var(--primary))", boxShadow: "0 0 20px hsl(var(--primary) / 0.3)" } : {}}>
                     <div className="text-primary">{node.icon}</div>
                   </motion.div>
                   <div className="text-center mt-3 text-sm font-medium text-foreground">{node.label}</div>
-                  <motion.div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-48 bg-background/95 backdrop-blur-sm border border-border rounded-lg shadow-xl overflow-hidden" initial={{ opacity: 0, scale: 0.9, y: -10 }} animate={nodeStates[node.id] ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.9, y: -10 }} transition={{ duration: 0.2 }} style={{ pointerEvents: "none" }}>
+                  <motion.div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-48 bg-background/95 backdrop-blur-sm border border-border rounded-lg shadow-xl overflow-hidden" initial={{ opacity: 0, scale: 0.9, y: -10 }} animate={nodeStates[node.id] ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.9, y: -10 }} transition={{ duration: 0.26, ease: "easeOut" }} style={{ pointerEvents: "none" }}>
                     {node.details.map((detail, detailIndex) => (
-                      <motion.div key={detailIndex} className="px-4 py-2 text-sm text-muted-foreground hover:bg-muted/50 border-b border-border/50 last:border-b-0" initial={{ opacity: 0, x: -10 }} animate={nodeStates[node.id] ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }} transition={{ duration: 0.2, delay: detailIndex * 0.1 }}>
+                      <motion.div key={detailIndex} className="px-4 py-2 text-sm text-muted-foreground hover:bg-muted/50 border-b border-border/50 last:border-b-0" initial={{ opacity: 0, x: -10 }} animate={nodeStates[node.id] ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }} transition={{ duration: 0.24, delay: detailIndex * 0.09, ease: "easeOut" }}>
                         {detail}
                       </motion.div>
                     ))}
