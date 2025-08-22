@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
 import { Wallet, Zap, Database, Brain, Plus, Send } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -41,7 +41,7 @@ const useCanvasTrail = () => {
     if (!ctx) return;
 
     let animationId: number;
-    let trails: Array<{ x: number; y: number; life: number }> = [];
+    const trails: Array<{ x: number; y: number; life: number }> = [];
 
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
@@ -117,7 +117,7 @@ export const Hero: React.FC<HeroComponentProps> = ({
     { id: "sarah", username: "Sarah", color: "#4ECDC4" },
   ];
 
-  const nodes: NodeItem[] = [
+  const nodes: NodeItem[] = useMemo(() => [
     {
       id: "data",
       label: "Data Sources",
@@ -142,7 +142,7 @@ export const Hero: React.FC<HeroComponentProps> = ({
       y: 120,
       details: ["Language Model", "Response Generation", "Quality Scoring", "Output Validation"],
     },
-  ];
+  ], []);
 
   useEffect(() => {
     let alexIndex = 0;
@@ -180,7 +180,7 @@ export const Hero: React.FC<HeroComponentProps> = ({
     }, 3000);
 
     return () => clearInterval(interval);
-  }, [cursor1X, cursor1Y, cursor2X, cursor2Y]);
+  }, [cursor1X, cursor1Y, cursor2X, cursor2Y, nodes]);
 
   const handleConnectWallet = () => {
     toast("Wallet login coming soon!", {
@@ -264,12 +264,12 @@ export const Hero: React.FC<HeroComponentProps> = ({
                     <button type="button" className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground hover:text-primary hover:bg-muted transition-colors">
                       <Plus className="h-5 w-5" />
                     </button>
-                    <input
+                    <Input
                       type="text"
                       placeholder={inputPlaceholder}
                       value={inputValue}
                       onChange={(e) => setInputValue(e.target.value)}
-                      className="flex-1 bg-transparent border-0 focus:outline-none focus:ring-0 text-foreground placeholder:text-muted-foreground text-sm"
+                      className="flex-1 bg-transparent border-0 h-8 px-0 py-0 focus-visible:ring-0 text-foreground placeholder:text-muted-foreground text-sm"
                     />
                   </div>
                   <button
