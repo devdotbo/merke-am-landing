@@ -37,6 +37,9 @@ export const Hero: React.FC<HeroComponentProps> = ({
   const [inputValue, setInputValue] = useState("");
   const typingTimer = useRef<number | null>(null);
   const [nodeStates, setNodeStates] = useState<Record<string, boolean>>({});
+  // Track the size of the canvas so we can scale node X positions responsively
+  const canvasRef = useRef<HTMLDivElement | null>(null);
+  const [canvasWidth, setCanvasWidth] = useState<number>(0);
 
   const cursor1X = useMotionValue(200);
   const cursor1Y = useMotionValue(150);
@@ -81,20 +84,64 @@ export const Hero: React.FC<HeroComponentProps> = ({
     },
   ], []);
 
+  // Observe width of the canvas to scale node positions horizontally so they never overflow
+  useEffect(() => {
+    const updateWidth = () => {
+      if (canvasRef.current) {
+        setCanvasWidth(canvasRef.current.clientWidth);
+      }
+    };
+    updateWidth();
+    const ro = new ResizeObserver(() => updateWidth());
+    if (canvasRef.current) ro.observe(canvasRef.current);
+    window.addEventListener("resize", updateWidth);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", updateWidth);
+    };
+  }, []);
+
+  // Base layout was designed for ~660px width (right node at x=600 with 60px half-width)
+  // Map original x positions to available width so right edge stays within bounds.
+  const scaledNodes: NodeItem[] = useMemo(() => {
+    const width = canvasWidth || 660;
+    const usable = Math.max(width - 120, 0); // space available for left offset (w - node width)
+    const baseUsable = 540; // 660 - 120
+    const scale = Math.min(usable / baseUsable, 1); // clamp to 1 to avoid stretching beyond design
+
+    return nodes.map((n) => {
+      const baseLeft = n.x - 60;
+      const scaledLeft = baseLeft * (Number.isFinite(scale) ? scale : 1);
+      const scaledX = scaledLeft + 60;
+      return { ...n, x: scaledX };
+    });
+  }, [canvasWidth, nodes]);
+
+  // Ensure cursors start at the intended nodes on first render and when layout changes
+  useEffect(() => {
+    if (scaledNodes.length >= 3) {
+      // Alex begins at Data Sources, Sarah at AI Inference
+      cursor1X.set(scaledNodes[0].x);
+      cursor1Y.set(scaledNodes[0].y);
+      cursor2X.set(scaledNodes[2].x);
+      cursor2Y.set(scaledNodes[2].y);
+    }
+  }, [scaledNodes, cursor1X, cursor1Y, cursor2X, cursor2Y]);
+
   useEffect(() => {
     let alexIndex = 0;
     let sarahIndex = 0;
 
     const alexTargets = [
-      { x: 150, y: 120 },
-      { x: 400, y: 80 },
-      { x: 600, y: 120 },
+      { x: scaledNodes[0]?.x ?? 150, y: scaledNodes[0]?.y ?? 120 },
+      { x: scaledNodes[1]?.x ?? 400, y: scaledNodes[1]?.y ?? 80 },
+      { x: scaledNodes[2]?.x ?? 600, y: scaledNodes[2]?.y ?? 120 },
     ];
 
     const sarahTargets = [
-      { x: 600, y: 120 },
-      { x: 150, y: 120 },
-      { x: 400, y: 80 },
+      { x: scaledNodes[2]?.x ?? 600, y: scaledNodes[2]?.y ?? 120 },
+      { x: scaledNodes[0]?.x ?? 150, y: scaledNodes[0]?.y ?? 120 },
+      { x: scaledNodes[1]?.x ?? 400, y: scaledNodes[1]?.y ?? 80 },
     ];
 
     const interval = setInterval(() => {
@@ -117,7 +164,7 @@ export const Hero: React.FC<HeroComponentProps> = ({
     }, 3400);
 
     return () => clearInterval(interval);
-  }, [cursor1X, cursor1Y, cursor2X, cursor2Y, nodes]);
+  }, [cursor1X, cursor1Y, cursor2X, cursor2Y, nodes, scaledNodes]);
 
   const handleConnectWallet = () => {
     toast("Wallet login coming soon!", {
@@ -212,10 +259,10 @@ export const Hero: React.FC<HeroComponentProps> = ({
             </motion.form>
           </div>
 
-          <div className="relative h-96 lg:h-[500px]">
+          <div ref={canvasRef} className="relative h-96 lg:h-[500px]">
             <svg className="absolute inset-0 w-full h-full" style={{ zIndex: 1 }}>
-              {nodes.map((node, index) => {
-                const nextNode = nodes[index + 1];
+              {scaledNodes.map((node, index) => {
+                const nextNode = scaledNodes[index + 1];
                 if (!nextNode) return null;
                 return (
                   <motion.line
@@ -236,7 +283,7 @@ export const Hero: React.FC<HeroComponentProps> = ({
               })}
             </svg>
 
-            {nodes.map((node, index) => (
+            {scaledNodes.map((node, index) => (
               <motion.div key={node.id} className="absolute" style={{ left: node.x - 60, top: node.y - 40, zIndex: 2 }} initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.6, delay: index * 0.2, type: "spring", stiffness: 160, damping: 20 }}>
                 <div className="relative">
                   <motion.div className="w-24 h-24 rounded-2xl bg-background border border-border flex items-center justify-center shadow-sm" whileHover={{ scale: 1.05 }} animate={nodeStates[node.id] ? { borderColor: "hsl(var(--foreground))" } : {}}>
