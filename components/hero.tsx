@@ -2,10 +2,9 @@
 
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
-import { Wallet, Zap, Database, Brain, Send, Sparkles } from "lucide-react";
+import { Wallet, Zap, Database, Brain, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { BorderTrail } from "@/components/ui/border-trail";
 import { toast } from "sonner";
 
 interface NodeItem {
@@ -30,70 +29,6 @@ interface HeroComponentProps {
   ctaText?: string;
 }
 
-const useCanvasTrail = () => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [isInitialized, setIsInitialized] = useState(false);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas || isInitialized) return;
-
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animationId: number;
-    const trails: Array<{ x: number; y: number; life: number }> = [];
-
-    const resizeCanvas = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-
-    const addTrail = (x: number, y: number) => {
-      trails.push({ x, y, life: 1 });
-      if (trails.length > 50) trails.shift();
-    };
-
-    const animate = () => {
-      ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      trails.forEach((trail, index) => {
-        trail.life -= 0.02;
-        if (trail.life <= 0) {
-          trails.splice(index, 1);
-          return;
-        }
-
-        ctx.beginPath();
-        ctx.arc(trail.x, trail.y, trail.life * 3, 0, Math.PI * 2);
-        ctx.fillStyle = `hsla(${(Date.now() * 0.01) % 360}, 70%, 60%, ${trail.life})`;
-        ctx.fill();
-      });
-
-      animationId = requestAnimationFrame(animate);
-    };
-
-    const handleMouseMove = (e: MouseEvent) => {
-      addTrail(e.clientX, e.clientY);
-    };
-
-    resizeCanvas();
-    window.addEventListener("resize", resizeCanvas);
-    window.addEventListener("mousemove", handleMouseMove);
-    animate();
-    setIsInitialized(true);
-
-    return () => {
-      cancelAnimationFrame(animationId);
-      window.removeEventListener("resize", resizeCanvas);
-      window.removeEventListener("mousemove", handleMouseMove);
-    };
-  }, [isInitialized]);
-
-  return canvasRef;
-};
-
 export const Hero: React.FC<HeroComponentProps> = ({
   title = "Build with nodes. Keep the proof.",
   subtitle = "Click together data, RAG, and inference. 0G anchors your history and verifies results.",
@@ -101,10 +36,8 @@ export const Hero: React.FC<HeroComponentProps> = ({
 }) => {
   const [inputValue, setInputValue] = useState("");
   const [isFocused, setIsFocused] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
   const typingTimer = useRef<number | null>(null);
   const [nodeStates, setNodeStates] = useState<Record<string, boolean>>({});
-  const canvasRef = useCanvasTrail();
 
   const cursor1X = useMotionValue(200);
   const cursor1Y = useMotionValue(150);
@@ -206,19 +139,14 @@ export const Hero: React.FC<HeroComponentProps> = ({
 
   return (
     <div className="relative min-h-screen bg-background overflow-hidden">
-      <canvas
-        ref={canvasRef}
-        className="absolute inset-0 pointer-events-none opacity-20"
-        style={{ background: "transparent" }}
-      />
-
-      <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-secondary/10" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/20 via-transparent to-transparent" />
+      {/* Subtle grid + focused accent, less fog */}
+      <div className="absolute inset-0 [background-image:radial-gradient(hsl(var(--foreground)/0.08)_1px,transparent_1px)] [background-size:20px_20px] [mask-image:linear-gradient(to_bottom,rgba(0,0,0,0.25),rgba(0,0,0,0.85))]" />
+      <div className="absolute -top-40 -left-40 h-[520px] w-[520px] rounded-full bg-[radial-gradient(circle_at_center,_hsl(255_85%_60%/_0.25),_transparent_60%)]" />
 
       <div className="relative z-10 container mx-auto pl-4 pr-8 md:pr-16 lg:pr-24 xl:pr-32 py-20">
-        <div className="flex justify-between items-center mb-20">
+        <div className="flex justify-between items-center mb-16">
           <motion.div
-            className="text-2xl font-bold bg-gradient-to-r from-primary via-purple-500 to-secondary bg-clip-text text-transparent"
+            className="text-2xl font-semibold text-foreground"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
@@ -227,7 +155,7 @@ export const Hero: React.FC<HeroComponentProps> = ({
           </motion.div>
 
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
-            <Button variant="outline" onClick={handleConnectWallet} className="flex items-center gap-2 bg-background/50 backdrop-blur-sm border-border/50 hover:bg-background/80 transition-all duration-300">
+            <Button variant="outline" onClick={handleConnectWallet} className="flex items-center gap-2 border-border/60">
               <Wallet className="w-4 h-4" />
               Connect Wallet
             </Button>
@@ -237,12 +165,12 @@ export const Hero: React.FC<HeroComponentProps> = ({
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
             <motion.h1
-              className="text-5xl lg:text-7xl font-bold leading-tight tracking-tight"
+              className="text-5xl lg:text-7xl font-bold leading-tight tracking-tight text-foreground"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.0, ease: "easeOut" }}
             >
-              <span className="bg-gradient-to-r from-primary via-purple-500 to-secondary bg-clip-text text-transparent drop-shadow-sm">
+              <span className="bg-gradient-to-r from-violet-500 to-sky-500 bg-clip-text text-transparent">
                 {title}
               </span>
             </motion.h1>
@@ -263,65 +191,29 @@ export const Hero: React.FC<HeroComponentProps> = ({
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.0, delay: 0.35, ease: "easeOut" }}
             >
-              {/* light trails */}
-              <motion.div
-                aria-hidden
-                className="relative mb-0"
-              >
-                <motion.div
-                  aria-hidden
-                  className="absolute -left-64 top-1/2 -translate-y-1/2 w-64 h-12 blur-2xl"
-                  style={{ background: "linear-gradient(90deg, rgba(139,92,246,0.70), rgba(14,165,233,0.18), rgba(0,0,0,0))" }}
-                  animate={{ opacity: isFocused ? 0.9 : 0.5 }}
-                  transition={{ type: "spring", stiffness: 80, damping: 20 }}
-                />
-                <motion.div
-                  aria-hidden
-                  className="absolute -right-64 top-1/2 -translate-y-1/2 w-64 h-12 blur-2xl"
-                  style={{ background: "linear-gradient(270deg, rgba(139,92,246,0.70), rgba(14,165,233,0.18), rgba(0,0,0,0))" }}
-                  animate={{ opacity: isFocused ? 0.9 : 0.5 }}
-                  transition={{ type: "spring", stiffness: 80, damping: 20, delay: 0.05 }}
-                />
-
-                <div className="relative rounded-full magic-glow">
-                  <div className="relative isolate flex items-center gap-2 rounded-full bg-background/80 backdrop-blur-sm px-3 py-2">
-                    <div className="grid h-9 w-9 place-items-center rounded-full bg-white/5 ring-1 ring-white/10">
-                      <Sparkles className="h-4 w-4 text-violet-300" />
-                    </div>
-                    <Input
-                      type="text"
-                      placeholder={inputPlaceholder}
-                      value={inputValue}
-                      onChange={(e) => {
-                        setInputValue(e.target.value);
-                        setIsTyping(true);
-                        if (typingTimer.current) window.clearTimeout(typingTimer.current);
-                        typingTimer.current = window.setTimeout(() => setIsTyping(false), 700);
-                      }}
-                      onFocus={() => setIsFocused(true)}
-                      onBlur={() => setIsFocused(false)}
-                      className="flex-1 bg-transparent border-0 h-10 px-2 py-0 focus-visible:ring-0 text-foreground placeholder:text-muted-foreground text-sm"
-                    />
-                    <motion.button
-                      type="submit"
-                      disabled={!inputValue.trim()}
-                      whileHover={{ scale: inputValue.trim() ? 1.04 : 1 }}
-                      whileTap={{ scale: inputValue.trim() ? 0.96 : 1 }}
-                      animate={{ boxShadow: inputValue.trim() ? "0 0 20px rgba(139,92,246,0.35)" : "0 0 6px rgba(139,92,246,0.15)" }}
-                      className="relative flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-violet-400 to-sky-400 text-black shadow-md ring-4 ring-violet-400/15 disabled:opacity-60 disabled:cursor-not-allowed"
-                    >
-                      <motion.span animate={isTyping ? { x: [0, 5, 0] } : { x: 0 }} transition={isTyping ? { duration: 0.9, repeat: Infinity, ease: "easeInOut" } : { duration: 0.2 }}>
-                        <Send className="h-4 w-4" />
-                      </motion.span>
-                      <span aria-hidden className="pointer-events-none absolute inset-0 rounded-full ring-1 ring-white/30" />
-                    </motion.button>
+              <div className="relative">
+                <div className="relative isolate flex items-center gap-3 rounded-full border border-border bg-background px-3 py-2">
+                  <div className="grid h-9 w-9 place-items-center rounded-full bg-accent/30 ring-1 ring-border">
+                    <Sparkles className="h-4 w-4 text-violet-400" />
                   </div>
-                  <BorderTrail
-                    className="bg-gradient-to-l from-violet-300 via-sky-400 to-fuchsia-300"
-                    size={120}
+                  <Input
+                    type="text"
+                    placeholder={inputPlaceholder}
+                    value={inputValue}
+                    onChange={(e) => {
+                      setInputValue(e.target.value);
+                      if (typingTimer.current) window.clearTimeout(typingTimer.current);
+                      typingTimer.current = window.setTimeout(() => {}, 700);
+                    }}
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={() => setIsFocused(false)}
+                    className="flex-1 bg-transparent border-0 h-10 px-2 py-0 focus-visible:ring-0 text-foreground placeholder:text-muted-foreground text-sm"
                   />
+                  <Button type="submit" disabled={!inputValue.trim()} className="rounded-full bg-gradient-to-r from-violet-500 to-sky-500 text-white">
+                    Run with Magic Prompt
+                  </Button>
                 </div>
-              </motion.div>
+              </div>
             </motion.form>
           </div>
 
@@ -337,9 +229,9 @@ export const Hero: React.FC<HeroComponentProps> = ({
                     y1={node.y}
                     x2={nextNode.x}
                     y2={nextNode.y}
-                    stroke="hsl(var(--primary))"
-                    strokeWidth="2"
-                    strokeOpacity="0.3"
+                    stroke="hsl(var(--foreground))"
+                    strokeWidth="1.6"
+                    strokeOpacity="0.2"
                     strokeDasharray="5,5"
                     initial={{ pathLength: 0 }}
                     animate={{ pathLength: 1 }}
@@ -352,13 +244,13 @@ export const Hero: React.FC<HeroComponentProps> = ({
             {nodes.map((node, index) => (
               <motion.div key={node.id} className="absolute" style={{ left: node.x - 60, top: node.y - 40, zIndex: 2 }} initial={{ scale: 0, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} transition={{ duration: 0.6, delay: index * 0.2, type: "spring", stiffness: 160, damping: 20 }}>
                 <div className="relative">
-                  <motion.div className="w-24 h-24 rounded-2xl bg-background border-2 border-primary/20 flex items-center justify-center shadow-lg backdrop-blur-sm" whileHover={{ scale: 1.05 }} animate={nodeStates[node.id] ? { borderColor: "hsl(var(--primary))", boxShadow: "0 0 20px hsl(var(--primary) / 0.3)" } : {}}>
-                    <div className="text-primary">{node.icon}</div>
+                  <motion.div className="w-24 h-24 rounded-2xl bg-background border border-border flex items-center justify-center shadow-sm" whileHover={{ scale: 1.05 }} animate={nodeStates[node.id] ? { borderColor: "hsl(var(--foreground))" } : {}}>
+                    <div className="text-foreground">{node.icon}</div>
                   </motion.div>
                   <div className="text-center mt-3 text-sm font-medium text-foreground">{node.label}</div>
-                  <motion.div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-48 bg-background/95 backdrop-blur-sm border border-border rounded-lg shadow-xl overflow-hidden" initial={{ opacity: 0, scale: 0.9, y: -10 }} animate={nodeStates[node.id] ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.9, y: -10 }} transition={{ duration: 0.26, ease: "easeOut" }} style={{ pointerEvents: "none" }}>
+                  <motion.div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-48 bg-background border border-border rounded-lg shadow-md overflow-hidden" initial={{ opacity: 0, scale: 0.96, y: -6 }} animate={nodeStates[node.id] ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.96, y: -6 }} transition={{ duration: 0.2, ease: "easeOut" }} style={{ pointerEvents: "none" }}>
                     {node.details.map((detail, detailIndex) => (
-                      <motion.div key={detailIndex} className="px-4 py-2 text-sm text-muted-foreground hover:bg-muted/50 border-b border-border/50 last:border-b-0" initial={{ opacity: 0, x: -10 }} animate={nodeStates[node.id] ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }} transition={{ duration: 0.24, delay: detailIndex * 0.09, ease: "easeOut" }}>
+                      <motion.div key={detailIndex} className="px-4 py-2 text-sm text-muted-foreground border-b border-border/50 last:border-b-0" initial={{ opacity: 0, x: -10 }} animate={nodeStates[node.id] ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }} transition={{ duration: 0.18, delay: detailIndex * 0.08, ease: "easeOut" }}>
                         {detail}
                       </motion.div>
                     ))}
@@ -388,8 +280,6 @@ export const Hero: React.FC<HeroComponentProps> = ({
             </motion.div>
           </div>
         </div>
-
-        {/* Stats section removed per design request */}
       </div>
     </div>
   );
