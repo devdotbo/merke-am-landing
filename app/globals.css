@@ -1,44 +1,44 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
-/* Brand theme tokens */
+/* Brand theme tokens: warm off-white background, charcoal text, peach accent */
 :root {
-  /* Soft paper background and charcoal foreground */
-  --background: 0 0% 99%;
-  --foreground: 220 10% 18%;
+  /* Background pulled from logo backdrop: warm porcelain */
+  --background: 30 28% 96%;
+  /* Text color from logo wordmark: charcoal */
+  --foreground: 0 0% 22%;
 
-  /* UI neutrals */
-  --border: 0 0% 86%;
+  /* Subtle warm border tone */
+  --border: 24 20% 84%;
   --input: var(--border);
-  --ring: 8 55% 62%;
+  --ring: 0 0% 36%;
 
-  /* Copy tones */
-  --muted: 0 0% 96%;
-  --muted-foreground: 220 6% 42%;
+  --muted: 30 25% 94%;
+  --muted-foreground: 0 0% 45%;
 
-  /* Brand accent: muted rose used for underlines and details */
-  --accent: 8 55% 62%;
-  --accent-foreground: 0 0% 100%;
+  /* Underline accent inspired by the thin peach rules under the wordmark */
+  --accent: 18 38% 74%;
+  --accent-foreground: 0 0% 18%;
 
-  /* Primary buttons default to accent */
-  --primary: var(--accent);
-  --primary-foreground: 0 0% 100%;
+  --primary: var(--foreground);
+  --primary-foreground: 0 0% 98%;
 }
 
-/* Utility to use display font variable */
-.font-display { font-family: var(--font-display), ui-serif, Georgia, "Times New Roman", Times, serif; }
+/* Apply brand background, text, and serif font globally */
+body {
+  background: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--font-serif, ui-serif), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+}
 
-/* Brand underline (triple hairline) */
-.brand-underline { position: relative; padding-bottom: 14px; }
+/* Brand underline: single thin rule in light gray */
+.brand-underline { position: relative; padding-bottom: 8px; }
 .brand-underline::after {
   content: "";
   position: absolute;
   left: 0; right: 0; bottom: 0;
   height: 1px;
-  background: hsl(var(--accent) / 0.7);
-  box-shadow:
-    0 4px 0 0 hsl(var(--accent) / 0.55),
-    0 8px 0 0 hsl(var(--accent) / 0.4);
+  background: hsl(var(--accent));
 }
 
 @keyframes border-pan {
@@ -66,7 +66,7 @@
     hsl(45 96% 65%),
     hsl(260 98% 67%)
   );
-  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask: linear-gradient(hsl(var(--foreground)) 0 0) content-box, linear-gradient(hsl(var(--foreground)) 0 0);
   -webkit-mask-composite: xor;
           mask-composite: exclude;
   animation: border-pan 6s linear infinite;

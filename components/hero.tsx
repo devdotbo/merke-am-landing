@@ -35,7 +35,6 @@ export const Hero: React.FC<HeroComponentProps> = ({
   inputPlaceholder = "Describe your pipeline…",
 }) => {
   const [inputValue, setInputValue] = useState("");
-  const [isFocused, setIsFocused] = useState(false);
   const typingTimer = useRef<number | null>(null);
   const [nodeStates, setNodeStates] = useState<Record<string, boolean>>({});
 
@@ -140,13 +139,13 @@ export const Hero: React.FC<HeroComponentProps> = ({
   return (
     <div className="relative min-h-screen bg-background overflow-hidden">
       {/* Subtle grid + focused accent, less fog */}
-      <div className="absolute inset-0 [background-image:radial-gradient(hsl(var(--foreground)/0.08)_1px,transparent_1px)] [background-size:20px_20px] [mask-image:linear-gradient(to_bottom,rgba(0,0,0,0.25),rgba(0,0,0,0.85))]" />
+      <div className="absolute inset-0 [background-image:radial-gradient(hsl(var(--foreground)/0.08)_1px,transparent_1px)] [background-size:20px_20px] [mask-image:linear-gradient(to_bottom,hsl(var(--foreground)/0.25),hsl(var(--foreground)/0.85))]" />
       <div className="absolute -top-40 -left-40 h-[520px] w-[520px] rounded-full bg-[radial-gradient(circle_at_center,_hsl(var(--accent)/0.25),_transparent_60%)]" />
 
       <div className="relative z-10 container mx-auto pl-4 pr-8 md:pr-16 lg:pr-24 xl:pr-32 py-20">
         <div className="flex justify-between items-center mb-16">
           <motion.div
-            className="text-2xl font-semibold text-foreground font-display brand-underline"
+            className="text-2xl font-semibold text-foreground brand-underline"
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
@@ -165,7 +164,7 @@ export const Hero: React.FC<HeroComponentProps> = ({
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
             <motion.h1
-              className="text-5xl lg:text-7xl font-bold leading-tight tracking-tight text-foreground font-display"
+              className="text-5xl lg:text-7xl font-bold leading-tight tracking-tight text-foreground"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.0, ease: "easeOut" }}
@@ -203,8 +202,6 @@ export const Hero: React.FC<HeroComponentProps> = ({
                       if (typingTimer.current) window.clearTimeout(typingTimer.current);
                       typingTimer.current = window.setTimeout(() => {}, 700);
                     }}
-                    onFocus={() => setIsFocused(true)}
-                    onBlur={() => setIsFocused(false)}
                     className="flex-1 bg-transparent border-0 h-10 px-2 py-0 focus-visible:ring-0 text-foreground placeholder:text-muted-foreground text-sm"
                   />
                   <Button type="submit" disabled={!inputValue.trim()} className="rounded-full">
@@ -261,7 +258,7 @@ export const Hero: React.FC<HeroComponentProps> = ({
               <div className="relative">
                 <motion.div className="w-6 h-6 rounded-full shadow-lg" style={{ backgroundColor: cursors[0].color }} animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }} />
                 <motion.div className="absolute inset-0 w-6 h-6 rounded-full" style={{ backgroundColor: cursors[0].color + "40" }} animate={{ scale: [1, 2.5, 1], opacity: [0.6, 0, 0.6] }} transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }} />
-                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 px-2 py-1 rounded text-xs font-medium text-white whitespace-nowrap shadow-sm" style={{ backgroundColor: cursors[0].color }}>
+                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 px-2 py-1 rounded text-xs font-medium text-primary-foreground whitespace-nowrap shadow-sm" style={{ backgroundColor: cursors[0].color }}>
                   {cursors[0].username}
                 </div>
               </div>
@@ -271,7 +268,7 @@ export const Hero: React.FC<HeroComponentProps> = ({
               <div className="relative">
                 <motion.div className="w-6 h-6 rounded-full shadow-lg" style={{ backgroundColor: cursors[1].color }} animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut", delay: 0.5 }} />
                 <motion.div className="absolute inset-0 w-6 h-6 rounded-full" style={{ backgroundColor: cursors[1].color + "40" }} animate={{ scale: [1, 2.5, 1], opacity: [0.6, 0, 0.6] }} transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut", delay: 0.5 }} />
-                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 px-2 py-1 rounded text-xs font-medium text-white whitespace-nowrap shadow-sm" style={{ backgroundColor: cursors[1].color }}>
+                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 px-2 py-1 rounded text-xs font-medium text-primary-foreground whitespace-nowrap shadow-sm" style={{ backgroundColor: cursors[1].color }}>
                   {cursors[1].username}
                 </div>
               </div>
