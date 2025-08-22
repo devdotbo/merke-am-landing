@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
-import { Wallet, Zap, Database, Brain, Plus, Send } from "lucide-react";
+import { Wallet, Zap, Database, Brain, Send, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
@@ -94,11 +94,14 @@ const useCanvasTrail = () => {
 };
 
 export const Hero: React.FC<HeroComponentProps> = ({
-  title = "Transform Data into Intelligence",
-  subtitle = "Experience the power of RAG-driven inference with our cutting-edge AI platform",
-  inputPlaceholder = "Enter your query...",
+  title = "Build with nodes. Keep the proof.",
+  subtitle = "Click together data, RAG, and inference. 0G anchors your history and verifies results.",
+  inputPlaceholder = "Describe your pipeline…",
 }) => {
   const [inputValue, setInputValue] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
+  const typingTimer = useRef<number | null>(null);
   const [nodeStates, setNodeStates] = useState<Record<string, boolean>>({});
   const canvasRef = useCanvasTrail();
 
@@ -210,7 +213,7 @@ export const Hero: React.FC<HeroComponentProps> = ({
       <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-background to-secondary/10" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/20 via-transparent to-transparent" />
 
-      <div className="relative z-10 container mx-auto px-4 py-20">
+      <div className="relative z-10 container mx-auto pl-4 pr-8 md:pr-16 lg:pr-24 xl:pr-32 py-20">
         <div className="flex justify-between items-center mb-20">
           <motion.div
             className="text-2xl font-bold bg-gradient-to-r from-primary via-purple-500 to-secondary bg-clip-text text-transparent"
@@ -218,7 +221,7 @@ export const Hero: React.FC<HeroComponentProps> = ({
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
           >
-            AI Platform
+            Merke.am
           </motion.div>
 
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
@@ -253,34 +256,66 @@ export const Hero: React.FC<HeroComponentProps> = ({
 
             <motion.form
               onSubmit={handleSubmit}
-              className="max-w-2xl w-full"
+              className="w-full max-w-2xl mx-auto"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
             >
-              <div className="relative">
-                <div className="flex items-center bg-background/80 backdrop-blur-sm border border-border rounded-2xl p-3 shadow-lg hover:shadow-xl transition-shadow">
-                  <div className="flex items-center gap-2 flex-1">
-                    <button type="button" className="flex h-8 w-8 items-center justify-center rounded-full text-muted-foreground hover:text-primary hover:bg-muted transition-colors">
-                      <Plus className="h-5 w-5" />
-                    </button>
+              {/* light trails */}
+              <motion.div
+                aria-hidden
+                className="relative mb-0"
+              >
+                <motion.div
+                  aria-hidden
+                  className="absolute -left-64 top-1/2 -translate-y-1/2 w-64 h-12 blur-2xl"
+                  style={{ background: "linear-gradient(90deg, rgba(139,92,246,0.70), rgba(14,165,233,0.18), rgba(0,0,0,0))" }}
+                  animate={{ opacity: isFocused ? 0.9 : 0.5 }}
+                  transition={{ type: "spring", stiffness: 80, damping: 20 }}
+                />
+                <motion.div
+                  aria-hidden
+                  className="absolute -right-64 top-1/2 -translate-y-1/2 w-64 h-12 blur-2xl"
+                  style={{ background: "linear-gradient(270deg, rgba(139,92,246,0.70), rgba(14,165,233,0.18), rgba(0,0,0,0))" }}
+                  animate={{ opacity: isFocused ? 0.9 : 0.5 }}
+                  transition={{ type: "spring", stiffness: 80, damping: 20, delay: 0.05 }}
+                />
+
+                <div className="magic-border magic-glow rounded-full">
+                  <div className="relative isolate flex items-center gap-2 rounded-full bg-background/80 backdrop-blur-sm px-3 py-2">
+                    <div className="grid h-9 w-9 place-items-center rounded-full bg-white/5 ring-1 ring-white/10">
+                      <Sparkles className="h-4 w-4 text-violet-300" />
+                    </div>
                     <Input
                       type="text"
                       placeholder={inputPlaceholder}
                       value={inputValue}
-                      onChange={(e) => setInputValue(e.target.value)}
-                      className="flex-1 bg-transparent border-0 h-8 px-0 py-0 focus-visible:ring-0 text-foreground placeholder:text-muted-foreground text-sm"
+                      onChange={(e) => {
+                        setInputValue(e.target.value);
+                        setIsTyping(true);
+                        if (typingTimer.current) window.clearTimeout(typingTimer.current);
+                        typingTimer.current = window.setTimeout(() => setIsTyping(false), 700);
+                      }}
+                      onFocus={() => setIsFocused(true)}
+                      onBlur={() => setIsFocused(false)}
+                      className="flex-1 bg-transparent border-0 h-10 px-2 py-0 focus-visible:ring-0 text-foreground placeholder:text-muted-foreground text-sm"
                     />
+                    <motion.button
+                      type="submit"
+                      disabled={!inputValue.trim()}
+                      whileHover={{ scale: inputValue.trim() ? 1.04 : 1 }}
+                      whileTap={{ scale: inputValue.trim() ? 0.96 : 1 }}
+                      animate={{ boxShadow: inputValue.trim() ? "0 0 20px rgba(139,92,246,0.35)" : "0 0 6px rgba(139,92,246,0.15)" }}
+                      className="relative flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-violet-400 to-sky-400 text-black shadow-md ring-4 ring-violet-400/15 disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      <motion.span animate={isTyping ? { x: [0, 4, 8] } : { x: 0 }} transition={isTyping ? { duration: 0.8, repeat: Infinity, ease: "easeIn" } : { duration: 0.2 }}>
+                        <Send className="h-4 w-4" />
+                      </motion.span>
+                      <span aria-hidden className="pointer-events-none absolute inset-0 rounded-full ring-1 ring-white/30" />
+                    </motion.button>
                   </div>
-                  <button
-                    type="submit"
-                    disabled={!inputValue.trim()}
-                    className="flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground hover:bg-primary/90 disabled:bg-muted disabled:text-muted-foreground transition-all duration-200 disabled:cursor-not-allowed"
-                  >
-                    <Send className="h-4 w-4" />
-                  </button>
                 </div>
-              </div>
+              </motion.div>
             </motion.form>
           </div>
 
@@ -348,20 +383,7 @@ export const Hero: React.FC<HeroComponentProps> = ({
           </div>
         </div>
 
-        <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-20 pt-20 border-t border-border/50" initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.6 }}>
-          {[
-            { label: "Data Sources", value: "1000+", gradient: "from-blue-500 to-cyan-500" },
-            { label: "Inference Speed", value: "< 100ms", gradient: "from-green-500 to-emerald-500" },
-            { label: "Accuracy Rate", value: "99.9%", gradient: "from-purple-500 to-pink-500" },
-          ].map((stat, index) => (
-            <motion.div key={index} className="text-center group" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.8 + index * 0.1 }} whileHover={{ y: -5 }}>
-              <div className={`text-3xl font-bold bg-gradient-to-r ${stat.gradient} bg-clip-text text-transparent mb-2 group-hover:scale-110 transition-transform duration-300`}>
-                {stat.value}
-              </div>
-              <div className="text-muted-foreground text-sm font-medium">{stat.label}</div>
-            </motion.div>
-          ))}
-        </motion.div>
+        {/* Stats section removed per design request */}
       </div>
     </div>
   );
