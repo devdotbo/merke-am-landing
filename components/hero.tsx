@@ -154,7 +154,7 @@ export const Hero: React.FC<HeroComponentProps> = ({
           </motion.div>
 
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
-            <Button variant="outline" onClick={handleConnectWallet} className="flex items-center gap-2 border-border/60">
+            <Button variant="outline" onClick={handleConnectWallet} className="flex items-center gap-2 border-border/60 font-brand-sans">
               <Wallet className="w-4 h-4" />
               Connect Wallet
             </Button>
@@ -202,9 +202,9 @@ export const Hero: React.FC<HeroComponentProps> = ({
                       if (typingTimer.current) window.clearTimeout(typingTimer.current);
                       typingTimer.current = window.setTimeout(() => {}, 700);
                     }}
-                    className="flex-1 bg-transparent border-0 h-10 px-2 py-0 focus-visible:ring-0 text-foreground placeholder:text-muted-foreground text-sm"
+                    className="flex-1 bg-transparent border-0 h-10 px-2 py-0 focus-visible:ring-0 text-foreground placeholder:text-muted-foreground text-sm font-brand-sans"
                   />
-                  <Button type="submit" disabled={!inputValue.trim()} className="rounded-full">
+                  <Button type="submit" disabled={!inputValue.trim()} className="rounded-full font-brand-sans">
                     Run with Magic Prompt
                   </Button>
                 </div>
@@ -242,10 +242,10 @@ export const Hero: React.FC<HeroComponentProps> = ({
                   <motion.div className="w-24 h-24 rounded-2xl bg-background border border-border flex items-center justify-center shadow-sm" whileHover={{ scale: 1.05 }} animate={nodeStates[node.id] ? { borderColor: "hsl(var(--foreground))" } : {}}>
                     <div className="text-foreground">{node.icon}</div>
                   </motion.div>
-                  <div className="text-center mt-3 text-sm font-medium text-foreground">{node.label}</div>
+                  <div className="text-center mt-3 text-sm font-medium text-foreground font-brand-sans">{node.label}</div>
                   <motion.div className="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 w-48 bg-background border border-border rounded-lg shadow-md overflow-hidden" initial={{ opacity: 0, scale: 0.96, y: -6 }} animate={nodeStates[node.id] ? { opacity: 1, scale: 1, y: 0 } : { opacity: 0, scale: 0.96, y: -6 }} transition={{ duration: 0.2, ease: "easeOut" }} style={{ pointerEvents: "none" }}>
                     {node.details.map((detail, detailIndex) => (
-                      <motion.div key={detailIndex} className="px-4 py-2 text-sm text-muted-foreground border-b border-border/50 last:border-b-0" initial={{ opacity: 0, x: -10 }} animate={nodeStates[node.id] ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }} transition={{ duration: 0.18, delay: detailIndex * 0.08, ease: "easeOut" }}>
+                      <motion.div key={detailIndex} className="px-4 py-2 text-sm font-semibold text-foreground border-b border-border/50 last:border-b-0 font-brand-sans" initial={{ opacity: 0, x: -10 }} animate={nodeStates[node.id] ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }} transition={{ duration: 0.18, delay: detailIndex * 0.08, ease: "easeOut" }}>
                         {detail}
                       </motion.div>
                     ))}
@@ -258,7 +258,7 @@ export const Hero: React.FC<HeroComponentProps> = ({
               <div className="relative">
                 <motion.div className="w-6 h-6 rounded-full shadow-lg" style={{ backgroundColor: cursors[0].color }} animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }} />
                 <motion.div className="absolute inset-0 w-6 h-6 rounded-full" style={{ backgroundColor: cursors[0].color + "40" }} animate={{ scale: [1, 2.5, 1], opacity: [0.6, 0, 0.6] }} transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }} />
-                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 px-2 py-1 rounded text-xs font-medium text-primary-foreground whitespace-nowrap shadow-sm" style={{ backgroundColor: cursors[0].color }}>
+                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 px-2 py-1 rounded text-xs font-medium text-primary-foreground whitespace-nowrap shadow-sm font-brand-sans" style={{ backgroundColor: cursors[0].color }}>
                   {cursors[0].username}
                 </div>
               </div>
@@ -268,7 +268,7 @@ export const Hero: React.FC<HeroComponentProps> = ({
               <div className="relative">
                 <motion.div className="w-6 h-6 rounded-full shadow-lg" style={{ backgroundColor: cursors[1].color }} animate={{ scale: [1, 1.1, 1] }} transition={{ duration: 1.8, repeat: Infinity, ease: "easeInOut", delay: 0.5 }} />
                 <motion.div className="absolute inset-0 w-6 h-6 rounded-full" style={{ backgroundColor: cursors[1].color + "40" }} animate={{ scale: [1, 2.5, 1], opacity: [0.6, 0, 0.6] }} transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut", delay: 0.5 }} />
-                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 px-2 py-1 rounded text-xs font-medium text-primary-foreground whitespace-nowrap shadow-sm" style={{ backgroundColor: cursors[1].color }}>
+                <div className="absolute -top-8 left-1/2 transform -translate-x-1/2 px-2 py-1 rounded text-xs font-medium text-primary-foreground whitespace-nowrap shadow-sm font-brand-sans" style={{ backgroundColor: cursors[1].color }}>
                   {cursors[1].username}
                 </div>
               </div>
