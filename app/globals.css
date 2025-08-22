@@ -1,2 +1,47 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+
+@keyframes border-pan {
+  0% { --angle: 0deg }
+  25% { --angle: 90deg }
+  50% { --angle: 180deg }
+  75% { --angle: 270deg }
+  100% { --angle: 360deg }
+}
+
+/* Magic border utility: animated conic-gradient stroke around rounded container */
+.magic-border {
+  position: relative;
+}
+.magic-border::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 2px; /* border width */
+  border-radius: inherit;
+  background: conic-gradient(from var(--angle, 0deg),
+    hsl(260 98% 67%),
+    hsl(190 97% 64%),
+    hsl(340 95% 65%),
+    hsl(45 96% 65%),
+    hsl(260 98% 67%)
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  animation: border-pan 6s linear infinite;
+  pointer-events: none;
+}
+.magic-border::after {
+  /* inner background */
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border-radius: inherit;
+  background: color-mix(in oklab, var(--background, transparent) 92%, transparent);
+  pointer-events: none;
+}
+
+.magic-glow {
+  filter: drop-shadow(0 0 18px hsl(260 98% 67% / 0.25)) drop-shadow(0 0 28px hsl(190 97% 64% / 0.2));
+}
