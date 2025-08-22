@@ -164,7 +164,7 @@ export const Hero: React.FC<HeroComponentProps> = ({
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="space-y-8">
             <motion.h1
-              className="text-5xl lg:text-7xl font-bold leading-tight tracking-tight text-foreground"
+              className="text-5xl lg:text-7xl font-semibold leading-tight tracking-tight text-foreground font-brand-serif"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.0, ease: "easeOut" }}
@@ -173,7 +173,7 @@ export const Hero: React.FC<HeroComponentProps> = ({
             </motion.h1>
 
             <motion.p
-              className="text-xl text-muted-foreground max-w-lg lining-nums"
+              className="text-lg md:text-xl text-foreground/90 max-w-2xl leading-7 md:leading-8 tracking-normal font-brand-sans lining-nums"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1.0, delay: 0.2, ease: "easeOut" }}
