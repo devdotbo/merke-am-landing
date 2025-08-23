@@ -190,8 +190,8 @@ export const Hero: React.FC<HeroComponentProps> = ({
       <div className="absolute inset-0 [background-image:radial-gradient(hsl(var(--foreground)/0.08)_1px,transparent_1px)] [background-size:20px_20px] [mask-image:linear-gradient(to_bottom,hsl(var(--foreground)/0.25),hsl(var(--foreground)/0.85))]" />
       <div className="absolute -top-40 -left-40 h-[520px] w-[520px] rounded-full bg-[radial-gradient(circle_at_center,_hsl(var(--accent)/0.25),_transparent_60%)]" />
 
-      <div className="relative z-10 container mx-auto pl-4 pr-8 md:pr-16 lg:pr-24 xl:pr-32 py-20">
-        <div className="flex justify-between items-center mb-16">
+      <div className="relative z-[5] container mx-auto pl-4 pr-8 md:pr-16 lg:pr-24 xl:pr-32 py-20">
+        <div className="flex justify-between items-center mb-20">
           <motion.div
             className="text-2xl font-semibold text-foreground brand-underline"
             initial={{ opacity: 0, x: -20 }}
@@ -201,7 +201,7 @@ export const Hero: React.FC<HeroComponentProps> = ({
             merke.am
           </motion.div>
 
-          <motion.div className="flex items-center gap-2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
+          <motion.div className="relative z-[10] flex items-center gap-2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
             <ModeToggle />
             <Button variant="outline" onClick={handleConnectWallet} className="flex items-center gap-2 border-border/60 font-brand-sans">
               <Wallet className="w-4 h-4" />
