@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
-import { Wallet, Zap, Database, Brain, Sparkles } from "lucide-react";
+import { Wallet, Zap, Database, Brain, Sparkles, Paperclip } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
@@ -41,6 +41,8 @@ export const Hero: React.FC<HeroComponentProps> = ({
   // Track the size of the canvas so we can scale node X positions responsively
   const canvasRef = useRef<HTMLDivElement | null>(null);
   const [canvasWidth, setCanvasWidth] = useState<number>(0);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const [attachedFiles, setAttachedFiles] = useState<File[]>([]);
 
   const cursor1X = useMotionValue(200);
   const cursor1Y = useMotionValue(150);
@@ -174,14 +176,31 @@ export const Hero: React.FC<HeroComponentProps> = ({
     });
   };
 
+  const handleAttachClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files ? Array.from(e.target.files) : [];
+    setAttachedFiles(files);
+    if (files.length > 0) {
+      toast("Files attached", {
+        description: `${files.length} file${files.length > 1 ? "s" : ""} selected`,
+        duration: 2500,
+      });
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!inputValue.trim()) return;
+    if (!inputValue.trim() && attachedFiles.length === 0) return;
     toast("Query submitted!", {
-      description: `Processing: "${inputValue}"`,
+      description: `Processing: "${inputValue}"${attachedFiles.length ? ` with ${attachedFiles.length} file(s)` : ""}`,
       duration: 3000,
     });
     setInputValue("");
+    setAttachedFiles([]);
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   return (
@@ -253,7 +272,28 @@ export const Hero: React.FC<HeroComponentProps> = ({
                     }}
                     className="flex-1 bg-transparent border-0 h-10 px-2 py-0 focus-visible:ring-0 text-foreground placeholder:text-muted-foreground text-sm font-brand-sans"
                   />
-                  <Button type="submit" disabled={!inputValue.trim()} className="rounded-full font-brand-sans">
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    multiple
+                    onChange={handleFilesChange}
+                    className="sr-only"
+                    accept=".txt,.md,.pdf,.json,.csv,.doc,.docx,.png,.jpg,.jpeg,.gif,.webp"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAttachClick}
+                    className="relative inline-flex h-10 w-10 items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+                    aria-label="Attach files"
+                  >
+                    <Paperclip className="h-4 w-4" />
+                    {attachedFiles.length > 0 && (
+                      <span className="absolute -top-1 -right-1 h-4 min-w-[1rem] px-1 rounded-full bg-[hsl(var(--accent))] text-[10px] leading-4 text-primary-foreground text-center">
+                        {attachedFiles.length}
+                      </span>
+                    )}
+                  </button>
+                  <Button type="submit" disabled={!inputValue.trim() && attachedFiles.length === 0} className="rounded-full font-brand-sans bg-[hsl(var(--accent))] text-[hsl(var(--accent-foreground))] hover:bg-[hsl(var(--accent)/0.9)] disabled:bg-[hsl(var(--accent)/0.35)] disabled:text-[hsl(var(--accent-foreground))] disabled:opacity-100">
                     Run with Magic Prompt
                   </Button>
                 </div>
