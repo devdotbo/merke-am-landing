@@ -89,3 +89,17 @@ body {
 .magic-glow {
   filter: drop-shadow(0 0 18px hsl(260 98% 67% / 0.25)) drop-shadow(0 0 28px hsl(190 97% 64% / 0.2));
 }
+
+/* Brand font utilities */
+.font-brand-serif {
+  font-family: var(--font-serif), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+}
+
+.font-brand-sans {
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+/* Apply serif globally to H1s */
+h1 {
+  font-family: var(--font-serif), ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+}
