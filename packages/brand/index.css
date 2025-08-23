@@ -15,6 +15,21 @@
   --primary-foreground: 0 0% 98%;
 }
 
+/* Dark theme overrides when html has class="dark" */
+.dark {
+  --background: 24 10% 10%;
+  --foreground: 0 0% 92%;
+  --border: 24 8% 18%;
+  --input: var(--border);
+  --ring: 0 0% 60%;
+  --muted: 24 8% 14%;
+  --muted-foreground: 0 0% 70%;
+  --accent: 18 35% 55%;
+  --accent-foreground: 0 0% 10%;
+  --primary: var(--foreground);
+  --primary-foreground: 0 0% 8%;
+}
+
 /* Utilities */
 .brand-underline { position: relative; padding-bottom: 8px; }
 .brand-underline::after {

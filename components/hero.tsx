@@ -6,6 +6,7 @@ import { Wallet, Zap, Database, Brain, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
+import { ModeToggle } from "@/components/mode-toggle";
 
 interface NodeItem {
   id: string;
@@ -200,7 +201,8 @@ export const Hero: React.FC<HeroComponentProps> = ({
             merke.am
           </motion.div>
 
-          <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
+          <motion.div className="flex items-center gap-2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.6 }}>
+            <ModeToggle />
             <Button variant="outline" onClick={handleConnectWallet} className="flex items-center gap-2 border-border/60 font-brand-sans">
               <Wallet className="w-4 h-4" />
               Connect Wallet
