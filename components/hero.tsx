@@ -2,9 +2,17 @@
 
 import React, { useState, useEffect, useRef, useMemo } from "react";
 import { motion, useMotionValue, useSpring } from "framer-motion";
-import { Wallet, Zap, Database, Brain, Sparkles, Paperclip } from "lucide-react";
+import { Wallet, Zap, Database, Brain, Sparkles, Paperclip, Link2, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import { ModeToggle } from "@/components/mode-toggle";
 
@@ -180,6 +188,20 @@ export const Hero: React.FC<HeroComponentProps> = ({
     fileInputRef.current?.click();
   };
 
+  const handleLinkUrl = () => {
+    toast("Add URL", {
+      description: "Linking external URLs is coming soon.",
+      duration: 2500,
+    });
+  };
+
+  const handlePasteText = () => {
+    toast("Paste text", {
+      description: "A quick paste modal is coming soon.",
+      duration: 2500,
+    });
+  };
+
   const handleFilesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files ? Array.from(e.target.files) : [];
     setAttachedFiles(files);
@@ -258,9 +280,38 @@ export const Hero: React.FC<HeroComponentProps> = ({
             >
               <div className="relative">
                 <div className="relative isolate flex items-center gap-3 rounded-full border border-border bg-background px-3 py-2">
-                  <div className="grid h-9 w-9 place-items-center rounded-full bg-accent/20 ring-1 ring-border">
-                    <Sparkles className="h-4 w-4 text-[hsl(var(--accent))]" />
-                  </div>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button type="button" aria-label="Add context" className="relative grid h-9 w-9 place-items-center rounded-full bg-accent/20 ring-1 ring-border focus:outline-none">
+                        <Sparkles className="h-4 w-4 text-[hsl(var(--accent))]" />
+                        {attachedFiles.length > 0 && (
+                          <span className="absolute -top-1 -right-1 h-4 min-w-[1rem] px-1 rounded-full bg-[hsl(var(--accent))] text-[10px] leading-4 text-primary-foreground text-center">
+                            {attachedFiles.length}
+                          </span>
+                        )}
+                      </button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="start" side="bottom" sideOffset={8} className="w-56">
+                      <DropdownMenuLabel>Add context</DropdownMenuLabel>
+                      <DropdownMenuItem onClick={handleAttachClick} className="gap-2">
+                        <Paperclip className="h-4 w-4" />
+                        Upload files…
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={handleLinkUrl} className="gap-2">
+                        <Link2 className="h-4 w-4" />
+                        Link URL…
+                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={handlePasteText} className="gap-2">
+                        <FileText className="h-4 w-4" />
+                        Paste text…
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem disabled className="gap-2">
+                        <Database className="h-4 w-4" />
+                        Connect data source (soon)
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                   <Input
                     type="text"
                     placeholder={inputPlaceholder}
@@ -280,19 +331,6 @@ export const Hero: React.FC<HeroComponentProps> = ({
                     className="sr-only"
                     accept=".txt,.md,.pdf,.json,.csv,.doc,.docx,.png,.jpg,.jpeg,.gif,.webp"
                   />
-                  <button
-                    type="button"
-                    onClick={handleAttachClick}
-                    className="relative inline-flex h-10 w-10 items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
-                    aria-label="Attach files"
-                  >
-                    <Paperclip className="h-4 w-4" />
-                    {attachedFiles.length > 0 && (
-                      <span className="absolute -top-1 -right-1 h-4 min-w-[1rem] px-1 rounded-full bg-[hsl(var(--accent))] text-[10px] leading-4 text-primary-foreground text-center">
-                        {attachedFiles.length}
-                      </span>
-                    )}
-                  </button>
                   <Button type="submit" disabled={!inputValue.trim() && attachedFiles.length === 0} className="rounded-full font-brand-sans bg-[hsl(var(--accent))] text-[hsl(var(--accent-foreground))] hover:bg-[hsl(var(--accent)/0.9)] disabled:bg-[hsl(var(--accent)/0.35)] disabled:text-[hsl(var(--accent-foreground))] disabled:opacity-100">
                     Run with Magic Prompt
                   </Button>
