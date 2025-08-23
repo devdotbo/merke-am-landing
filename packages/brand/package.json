@@ -1,0 +1,13 @@
+{
+  "name": "@merke/brand",
+  "version": "0.1.0",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "main": "./index.css",
+  "files": [
+    "index.css",
+    "README.md"
+  ]
+}
+

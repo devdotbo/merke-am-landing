@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@merke/brand':
+        specifier: workspace:*
+        version: link:packages/brand
       '@radix-ui/react-slot':
         specifier: ^1.2.3
         version: 1.2.3(@types/react@19.1.10)(react@19.1.0)
@@ -69,6 +72,8 @@ importers:
       typescript:
         specifier: ^5
         version: 5.9.2
+
+  packages/brand: {}
 
 packages:
 
