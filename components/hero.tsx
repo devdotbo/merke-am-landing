@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { toast } from "sonner";
 import { ModeToggle } from "@/components/mode-toggle";
+import WorkInProgressGate from "@/components/work-in-progress-gate";
 
 interface NodeItem {
   id: string;
@@ -177,11 +178,10 @@ export const Hero: React.FC<HeroComponentProps> = ({
     return () => clearInterval(interval);
   }, [cursor1X, cursor1Y, cursor2X, cursor2Y, nodes, scaledNodes]);
 
+  const [showGate, setShowGate] = useState(false);
+
   const handleConnectWallet = () => {
-    toast("Wallet login coming soon!", {
-      description: "We're working on integrating wallet connectivity.",
-      duration: 3000,
-    });
+    setShowGate(true);
   };
 
   const handleAttachClick = () => {
@@ -216,10 +216,7 @@ export const Hero: React.FC<HeroComponentProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!inputValue.trim() && attachedFiles.length === 0) return;
-    toast("Query submitted!", {
-      description: `Processing: "${inputValue}"${attachedFiles.length ? ` with ${attachedFiles.length} file(s)` : ""}`,
-      duration: 3000,
-    });
+    setShowGate(true);
     setInputValue("");
     setAttachedFiles([]);
     if (fileInputRef.current) fileInputRef.current.value = "";
@@ -403,6 +400,7 @@ export const Hero: React.FC<HeroComponentProps> = ({
           </div>
         </div>
       </div>
+      {showGate && <WorkInProgressGate />}
     </div>
   );
 };
